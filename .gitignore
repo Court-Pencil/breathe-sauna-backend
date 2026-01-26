@@ -1,0 +1,54 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Django
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+
+# PostgreSQL - IMPORTANT!
+# Don't commit database credentials
+*.sql
+*.dump
+
+# Environment variables - CRITICAL FOR SECURITY
+.env
+.env.local
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+
+# Media/Static
+media/
+staticfiles/
+static_root/
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
