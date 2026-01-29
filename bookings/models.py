@@ -12,4 +12,20 @@ class Sauna(models.Model): # what can be booked, represents a physical sauna roo
 
     class Meta:
         ordering = ['name']
-        
+
+    class TimeSlot(models.Model): # when it can be booked
+        start_time = models.TimeField()
+        end_time = models.TimeField()
+        # stores times without dates, can reuse across many dates
+        is_availible = models.BooleanField(Default=True)
+        # lets admins disable slots e.g. for holidays or maintance
+
+        def __str__(self):
+            """ Display time in readable format. Example: "09:00 - 10:00" """
+        return f"{self.start_time.strftime('%H:%M')} - {self.end-time.strftime('%H:%M')}" # strftime = string format time
+
+        class Meta:
+            ordering = ['start_time'] # Slots appear chronologically
+            unique-together = ['start_time', 'end_time'] # Prevent duplicate time slots
+
+
