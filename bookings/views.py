@@ -23,7 +23,7 @@ class MyBookingsView(LoginRequiredMixin, ListView):
     success_url = reverse_lazy('my_bookings')
 
     def get_queryset(self):
-        return Booking.objects.filter(user=self.request.user).order_by('-start_at')
+        return Booking.objects.filter(user=self.request.user).order_by('-booking_date', '-time_slot__start_time')
 
 class BookingCreateView(LoginRequiredMixin, CreateView):
     model = Booking

@@ -6,26 +6,35 @@ from .models import Booking
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ["sauna", "start_at", "duration_minutes", "notes"]
+        fields = ["sauna", "booking_date", "time_slot", "number_of_guests", "special_requests"]
         widgets = {
-            "start_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "booking_date": forms.DateInput(attrs={"type": "date"}),
+            "special_requests": forms.Textarea(attrs={"rows": 3}),
         }
 
-    def clean_start_at(self):
-        start_at = self.cleaned_data.get("start_at")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["time_slot"].queryset = self.fields["time_slot"].queryset.filter(is_available=True)
 
-        if start_at and start_at < timezone.now():
-            raise forms.ValidationError("Please choose a future date/time.")
-        return start_at
+
+    def clean_booking_data(self):
+        booking_date = self.cleaned_data.get("booking_date")
+
+        if booking_date and booking_date < timezone.now().date():
+            raise forms.ValidationError("Booking date cannot be in the past.")
+        return booking_date
+
+    
 
     def clean(self):
         cleaned = super().clean()
 
         booking = Booking(
             sauna=cleaned.get("sauna"),
-            start_at=cleaned.get("start_at"),
-            duration_minutes=cleaned.get("duration_minutes"),
-            notes=cleaned.get("notes"),
+            booking_date=cleaned.get("booking_date"),
+            time_slot=cleaned.get("time_slot"),
+            number_of_guests=cleaned.get("number_of_guests"),
+            special_requests=cleaned.get("special_requests"),
         )
 
         if self.instance and self.instance.pk:
