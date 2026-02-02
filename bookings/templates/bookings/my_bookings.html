@@ -1,0 +1,41 @@
+{% extends "bookings/base.html" %}
+
+{% block content %}
+
+<h1 class="mb-4">My Bookings</h1>
+
+{% if bookings %}
+  <div class="row">
+    {% for booking in bookings %}
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ booking.sauna.name }}</h5>
+            <p class="card-text">
+              <strong>Date:</strong> {{ booking.booking_date|date:"d/m/Y" }}<br>
+              <strong>Time:</strong> {{ booking.time_slot }}<br>
+              <strong>Guests:</strong> {{ booking.number_of_guests }}<br>
+              <strong>Status:</strong> 
+              <span class="badge bg-{{ booking.status|lower }}">
+                {{ booking.get_status_display }}
+              </span>
+            </p>
+            
+            {% if booking.status != 'cancelled' %}
+              <a href="{% url 'booking_delete' booking.pk %}" class="btn btn-danger btn-sm">
+                Cancel Booking
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    <p class="mb-0">You have no bookings yet.</p>
+    <a href="{% url 'booking_create' %}" class="alert-link">Make your first booking!</a>
+  </div>
+{% endif %}
+
+{% endblock %}

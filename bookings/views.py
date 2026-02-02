@@ -11,16 +11,21 @@ from .models import Booking, Sauna
 class HomeView(TemplateView):
     template_name = 'bookings/home.html'
 
-class SaunaListView(ListView):
-    model = Sauna
-    template_name = 'bookings/sauna_list.html'
-    context_object_name = 'saunas'
+class SaunaView(TemplateView):
+    template_name = "bookings/sauna.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        sauna = Sauna.objects.filter(is_active=True).first()
+        context["sauna"] = sauna
+
+        return context
 
 class MyBookingsView(LoginRequiredMixin, ListView):
     model = Booking
-    form_class = BookingForm
-    template_name = 'bookings/booking_form.html'
-    success_url = reverse_lazy('my_bookings')
+    template_name = 'bookings/my_bookings.html'
+    context_object_name = 'bookings'
 
     def get_queryset(self):
         return Booking.objects.filter(user=self.request.user).order_by('-booking_date', '-time_slot__start_time')
@@ -34,11 +39,23 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         booking = form.save(commit=False)
         booking.user = self.request.user
-        booking.status = Booking.STATUS_CONFIRMED
-        booking.full_clean()
-        booking.save()
-        messages.success(self.request, 'Booking created successfully.')
-        return redirect(self.success_url)
+
+        sauna = Sauna.objects.filter(is_active=True).first()
+        if sauna is None:
+            form.add_error(None, "No active sauna is available. Please contact the admin.")
+            return self.form_invalid(form)
+
+        booking.sauna = sauna
+        booking.status = "confirmed"
+
+        try:
+            booking.full_clean()
+            booking.save()
+            messages.success(self.request, 'Booking created successfully.')
+            return redirect(self.success_url)
+        except Exception as e:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
 
 class BookingDeleteView(LoginRequiredMixin, DeleteView):
     model = Booking

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'bookings',
     'users',
+    'core',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -122,6 +123,10 @@ USE_L10N = False
 TIME_FORMAT = "H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 DATE_FORMAT = "d/m/Y"
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
