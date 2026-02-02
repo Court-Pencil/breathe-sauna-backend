@@ -6,7 +6,7 @@ from .models import Booking
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ["sauna", "booking_date", "time_slot", "number_of_guests", "special_requests"]
+        fields = ["booking_date", "time_slot", "number_of_guests", "special_requests"]
         widgets = {
             "booking_date": forms.DateInput(attrs={"type": "date"}),
             "special_requests": forms.Textarea(attrs={"rows": 3}),
@@ -17,7 +17,7 @@ class BookingForm(forms.ModelForm):
         self.fields["time_slot"].queryset = self.fields["time_slot"].queryset.filter(is_available=True)
 
 
-    def clean_booking_data(self):
+    def clean_booking_date(self):
         booking_date = self.cleaned_data.get("booking_date")
 
         if booking_date and booking_date < timezone.now().date():
