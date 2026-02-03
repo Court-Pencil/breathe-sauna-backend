@@ -30,7 +30,6 @@ class BookingForm(forms.ModelForm):
         cleaned = super().clean()
 
         booking = Booking(
-            sauna=cleaned.get("sauna"),
             booking_date=cleaned.get("booking_date"),
             time_slot=cleaned.get("time_slot"),
             number_of_guests=cleaned.get("number_of_guests"),
@@ -40,6 +39,7 @@ class BookingForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             booking.pk = self.instance.pk
             booking.user = self.instance.user
+            booking.sauna = self.instance.sauna 
         try:
             booking.clean()
         except Exception as e:

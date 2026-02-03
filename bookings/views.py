@@ -12,7 +12,7 @@ class HomeView(TemplateView):
     template_name = 'bookings/home.html'
 
 class SaunaView(TemplateView):
-    template_name = "bookings/sauna.html"
+    template_name = "bookings/sauna_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -56,6 +56,38 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         except Exception as e:
             form.add_error(None, str(e))
             return self.form_invalid(form)
+
+class BookingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Booking
+    form_class = BookingForm
+    template_name = 'bookings/booking_form.html'  
+    success_url = reverse_lazy('my_bookings')
+
+    def get_queryset(self):
+        return Booking.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        booking = form.save(commit=False)
+        booking.user = self.request.user
+
+        if not booking.sauna:
+            sauna = Sauna.objects.filter(is_active=True).first()
+            if sauna is None:
+                form.add_error(None, "No active sauna is available.")
+                return self.form_invalid(form)
+            booking.sauna = sauna
+        
+        try:
+            booking.full_clean()
+            booking.save()
+            messages.success(self.request, 'Booking updated successfully.')
+            return redirect(self.success_url)
+        except Exception as e:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
+
+    
+
 
 class BookingDeleteView(LoginRequiredMixin, DeleteView):
     model = Booking
