@@ -33,14 +33,16 @@ class MyBookingsView(LoginRequiredMixin, ListView):
 class BookingCreateView(LoginRequiredMixin, CreateView):
     model = Booking
     form_class = BookingForm
-    template_name = 'bookings/booking_form.html'
-    success_url = reverse_lazy('my_bookings')
+    template_name = "bookings/booking_form.html"
+    success_url = reverse_lazy("my_bookings")
+
 
     def form_valid(self, form):
         booking = form.save(commit=False)
         booking.user = self.request.user
-
+        
         sauna = Sauna.objects.filter(is_active=True).first()
+
         if sauna is None:
             form.add_error(None, "No active sauna is available. Please contact the admin.")
             return self.form_invalid(form)
@@ -49,13 +51,14 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         booking.status = "confirmed"
 
         try:
-            booking.full_clean()
             booking.save()
             messages.success(self.request, 'Booking created successfully.')
             return redirect(self.success_url)
         except Exception as e:
             form.add_error(None, str(e))
             return self.form_invalid(form)
+
+        
 
 class BookingUpdateView(LoginRequiredMixin, UpdateView):
     model = Booking

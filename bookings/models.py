@@ -82,12 +82,13 @@ class Booking(models.Model): # links users,saunas, dates and times
     def clean(self):
         if self.booking_date and self.booking_date < timezone.now().date():
             raise ValidationError("Booking date cannot be in the past.")
-
-        if self.sauna and self.number_of_guests > self.sauna.capacity:
-            raise ValidationError(
-                f"Number of guests ({self.number_of_guests}) exceeds "
-                f"sauna capacity ({self.sauna.capacity})."
-            )
+            
+        if self.sauna:
+            if self.number_of_guests > self.sauna.capacity:
+                raise ValidationError(
+                    f"Number of guests ({self.number_of_guests}) exceeds "
+                    f"sauna capacity ({self.sauna.capacity})."
+                )
 
         if self.status != 'cancelled':
             existing = Booking.objects.filter(
