@@ -94,7 +94,7 @@ class BookingUpdateView(LoginRequiredMixin, UpdateView):
 
 class BookingDeleteView(LoginRequiredMixin, DeleteView):
     model = Booking
-    template_name = 'bookings/booking_confirm_delete.html'
+    template_name = 'bookings/bookings_confirm_delete.html'
     success_url = reverse_lazy('my_bookings')
 
     def get_queryset(self):
