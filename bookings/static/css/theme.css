@@ -49,35 +49,35 @@ h1,h2,h3,h4{
 }
 
 .navbar{
-  background: var(--white) !important;
+  background: var(--dark-walnut) !important;
   border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
 .navbar-brand{
-  color: var(--chestnut) !important;
+  color: var(--cream) !important;
   font-weight: 800;
 }
 
 .nav-link{
-  color: rgba(74,42,26,.84) !important;
+  color: var(--stone) !important;
   font-weight: 600;
 }
 
 .nav-link:hover{
-  color: var(--chestnut) !important;
+  color: var(--moss) !important;
 }
 
 .btn-primary{
-  background-color: var(--chestnut) !important;
-  border-color: var(--chestnut) !important;
+  background-color: var(--dark-walnut) !important;
+  border-color: var(--dark-walnut) !important;
   border-radius: var(--btn-radius);
   font-weight: 700;
   padding: .7rem 1.4rem;
 }
 
 .btn-primary:hover{
-  background-color: var(--dark-walnut) !important;
-  border-color: var(--dark-walnut) !important;
+  background-color: var(--chestnut) !important;
+  border-color: var(--chestnut) !important;
 }
 
 .btn-outline-primary{
@@ -103,7 +103,9 @@ h1,h2,h3,h4{
 }
 
 .btn-cream:hover{
-  background: rgba(245,243,238,.98);
+  background: #fff;
+  color: var(--dark-walnut);
+  
 }
 
 .card{
@@ -143,16 +145,6 @@ h1,h2,h3,h4{
   overflow: hidden;
 }
 
-/* .hero::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(
-    0deg,
-    rgba(74,42,26,.28),
-    rgba(139,74,47,.18)
-  );
-} */
 
 .hero .hero-content{
   position: relative;
@@ -174,7 +166,7 @@ h1,h2,h3,h4{
 }
 
 .cta-banner{
-  background: rgba(139,74,47,.30);
+  background: var(--chestnut);
   color: #fff;
   padding: 3.5rem 0;
 }
@@ -200,3 +192,24 @@ h1,h2,h3,h4{
 hr, .border{
   border-color: var(--border-soft) !important;
 }
+
+.footer{
+  background: var(--dark-walnut);
+  color: rgba(255,255,255,.85);
+}
+
+.footer h5,
+.footer h6{
+  color: #fff;
+}
+
+.footer-link{
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+}
+
+.footer-link:hover{
+  color: #fff;
+  text-decoration: underline;
+}
+
