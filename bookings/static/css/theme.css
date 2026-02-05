@@ -143,7 +143,7 @@ h1,h2,h3,h4{
   overflow: hidden;
 }
 
-.hero::after{
+/* .hero::after{
   content:"";
   position:absolute;
   inset:0;
@@ -152,7 +152,7 @@ h1,h2,h3,h4{
     rgba(74,42,26,.28),
     rgba(139,74,47,.18)
   );
-}
+} */
 
 .hero .hero-content{
   position: relative;

@@ -17,8 +17,8 @@ class SaunaView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        sauna = Sauna.objects.filter(is_active=True).first()
-        context["sauna"] = sauna
+        sauna = Sauna.objects.filter(is_active=True)
+        context["saunas"] = sauna
 
         return context
 

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 class Sauna(models.Model): # what can be booked, represents a physical sauna room
     name = models.CharField(max_length=100)
+    display_order = models.PositiveIntegerField(default=0) # for sorting saunas in the UI
     capacity = models.IntegerField(default=6)
     description = models.TextField()
     price_per_hour = models.DecimalField(max_digits=6, decimal_places=2)
@@ -15,7 +16,7 @@ class Sauna(models.Model): # what can be booked, represents a physical sauna roo
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ['display_order']
 
 
 class TimeSlot(models.Model): # when it can be booked
