@@ -1,1 +1,1 @@
-web: gunicorn breathe_sauna.wsgi:application --log-file -
+web: gunicorn breathe_config.wsgi:application --log-file -
