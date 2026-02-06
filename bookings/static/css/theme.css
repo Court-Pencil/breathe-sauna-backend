@@ -213,3 +213,240 @@ hr, .border{
   text-decoration: underline;
 }
 
+/* Booking Calendar Styles */
+.booking-calendar {
+    background: var(--dark-walnut);
+    padding: 3rem;
+    border-radius: 1rem;
+    max-width: 1400px;
+    margin: 2rem auto;
+    color: var(--cream);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.month-navigation {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 0.2s;
+    color: var(--cream);
+}
+
+.nav-button:hover {
+    transform: scale(1.1);
+}
+
+.current-month {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    margin-bottom: 3rem;
+    
+}
+
+.weekday {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 1rem;
+}
+
+.day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.day:hover:not(.empty):not(.past) {
+    background: var(--stone);
+}
+
+.day.empty {
+    visibility: hidden;
+}
+
+.day.past {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.day.selected {
+    background: var(--stone);
+    color: var(--cream);
+    font-weight: 700;
+    border-radius: 50%;
+}
+
+.day.today {
+    border: 2px solid #212121;
+}
+
+/* Time Slots Section */
+.time-slots-section {
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    padding-top: 2rem;
+}
+
+.selected-date-header {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.timezone-info {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.time-slot {
+    background: var(--stone);
+    border: 2px solid transparent;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.time-slot:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.time-slot.selected {
+    background: var(--cream);
+    color: var(--dark-walnut);
+    border-color: #212121;
+}
+
+.time-slot.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.time-slot-time {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.time-slot-availability {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.booking-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-calendar {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-calendar-primary {
+    background: var(--cream);
+    color: var(--dark-walnut);
+}
+
+.btn-calendar-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-calendar-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-calendar-secondary {
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--dark-walnut);
+}
+
+.btn-calendar-secondary:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.no-slots-message {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.25rem;
+    opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .booking-calendar {
+        padding: 1.5rem;
+    }
+
+    .current-month {
+        font-size: 1.5rem;
+    }
+
+    .weekday {
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+
+    .day {
+        font-size: 1rem;
+    }
+
+    .time-slots-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .selected-date-header {
+        font-size: 1.5rem;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+    }
+
+    .btn-calendar {
+        width: 100%;
+    }
+}
