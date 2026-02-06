@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
-
+import dj_database_url
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -81,14 +82,14 @@ WSGI_APPLICATION = 'breathe_config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),        
-        'USER': config('DB_USER'),        
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
+     'default': dj_database_url.config(
+         default=f"postgresql://{config('DB_USER', default='postgres')}:"
+                f"{config('DB_PASSWORD', default='')}@"
+                f"{config('DB_HOST', default='localhost')}:"
+                f"{config('DB_PORT', default='5432')}/"
+                f"{config('DB_NAME', default='breathe_sauna')}"
+     )
+     
 }
 
 
