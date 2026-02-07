@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 import dj_database_url
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +27,11 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ["sauna-project-ad449af7f2fb.herokuapp.com",
-    "localhost",
-    "127.0.0.1",]
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1,sauna-project-ad449af7f2fb.herokuapp.com",
+    cast=Csv(),
+)
 
 
 # Application definition
@@ -84,14 +86,10 @@ WSGI_APPLICATION = 'breathe_config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-     'default': dj_database_url.config(
-         default=f"postgresql://{config('DB_USER', default='postgres')}:"
-                f"{config('DB_PASSWORD', default='')}@"
-                f"{config('DB_HOST', default='localhost')}:"
-                f"{config('DB_PORT', default='5432')}/"
-                f"{config('DB_NAME', default='breathe_sauna')}"
-     )
-     
+    'default': dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
