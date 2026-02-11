@@ -2,12 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
+
 
 
 class Sauna(models.Model): # what can be booked, represents a physical sauna room
     name = models.CharField(max_length=100)
     display_order = models.PositiveIntegerField(default=0) # for sorting saunas in the UI
-    capacity = models.IntegerField(default=6)
+    capacity = models.PositiveIntegerField(default=6)
     description = models.TextField()
     price_per_hour = models.DecimalField(max_digits=6, decimal_places=2)
     is_active = models.BooleanField(default=True)
@@ -68,7 +70,7 @@ class Booking(models.Model): # links users,saunas, dates and times
         choices=STATUS_CHOICES,
         default='pending'
     )
-    number_of_guests = models.IntegerField(default=1)
+    number_of_guests = models.PositiveIntegerField(default=1)
     special_requests = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,7 +80,7 @@ class Booking(models.Model): # links users,saunas, dates and times
 
     class Meta:
         ordering = ['-booking_date', '-time_slot__start_time']
-        unique_together = ['sauna', 'booking_date', 'time_slot'] # Prevent double bookings for same sauna, date and time
+        # unique_together = ['sauna', 'booking_date', 'time_slot'] # Prevent double bookings for same sauna, date and time
 
     def clean(self):
         if self.booking_date and self.booking_date < timezone.now().date():
@@ -92,17 +94,22 @@ class Booking(models.Model): # links users,saunas, dates and times
                 )
 
         if self.status != 'cancelled':
-            existing = Booking.objects.filter(
+            existing_guests = Booking.objects.filter(
                 sauna=self.sauna,
                 booking_date=self.booking_date,
                 time_slot=self.time_slot,
                 status__in=['pending', 'confirmed']
-            ).exclude(pk=self.pk)
+            ).exclude(pk=self.pk).aggregate(existing_total=Sum("number_of_guests"))
 
-            if existing.exists():
+            existing_total = existing_guests.get("existing_total") or 0
+
+            total_with_this = existing_total + self.number_of_guests
+                
+            if total_with_this > self.sauna.capacity:
+                available = self.sauna.capacity - existing_total
                 raise ValidationError(
-                    f"This time slot is already booked for "
-                    f"{self.sauna.name} on {self.booking_date}."
+                    f"Only {available} spot(s) available. "
+                    f"You requested {self.number_of_guests} guest(s)."
                 )
 
     def save(self, *args, **kwargs):
