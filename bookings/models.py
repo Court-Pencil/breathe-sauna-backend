@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 
 
 class Sauna(models.Model): # what can be booked, represents a physical sauna room
@@ -78,7 +79,6 @@ class Booking(models.Model): # links users,saunas, dates and times
 
     class Meta:
         ordering = ['-booking_date', '-time_slot__start_time']
-        unique_together = ['sauna', 'booking_date', 'time_slot'] # Prevent double bookings for same sauna, date and time
 
     def clean(self):
         if self.booking_date and self.booking_date < timezone.now().date():
@@ -92,18 +92,24 @@ class Booking(models.Model): # links users,saunas, dates and times
                 )
 
         if self.status != 'cancelled':
-            existing = Booking.objects.filter(
+            existing_guests = Booking.objects.filter(
                 sauna=self.sauna,
                 booking_date=self.booking_date,
                 time_slot=self.time_slot,
                 status__in=['pending', 'confirmed']
-            ).exclude(pk=self.pk)
+            ).exclude(pk=self.pk).aggregate(existing_total=Sum('number_of_guests'))
 
-            if existing.exists():
+            existing_total = existing_guests.get('existing_total') or 0
+
+            total_with_this = existing_total + self.number_of_guests
+
+            if total_with_this > self.sauna.capacity:
+                available = self.sauna.capacity - existing_total
                 raise ValidationError(
-                    f"This time slot is already booked for "
-                    f"{self.sauna.name} on {self.booking_date}."
+                    f"{available} spot(s) available. "
+                    f"You requested {self.number_of_guests} guest(s)."
                 )
+
 
     def save(self, *args, **kwargs):
         self.clean()  # Validate before saving
