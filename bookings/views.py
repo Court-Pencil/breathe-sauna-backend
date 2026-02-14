@@ -4,6 +4,12 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.template.context_processors import csrf
+from crispy_forms.utils import render_crispy_form
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.template.loader import render_to_string
+
 
 from .forms import BookingForm
 from .models import Booking, Sauna
@@ -30,12 +36,24 @@ class MyBookingsView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Booking.objects.filter(user=self.request.user).order_by('-booking_date', '-time_slot__start_time')
 
+def validate_booking_form(request):
+    form = BookingForm(request.POST or None)
+
+    is_valid = (request.method == "POST" and form.is_valid())
+    
+    form_html = render_to_string(
+        "bookings/_booking_fields.html",
+        {"form" : form},
+        request=request
+    )
+    
+    return JsonResponse({'success': is_valid, 'form_html': form_html})
+
 class BookingCreateView(LoginRequiredMixin, CreateView):
     model = Booking
     form_class = BookingForm
     template_name = "bookings/booking_form.html"
     success_url = reverse_lazy("my_bookings")
-
 
     def form_valid(self, form):
         booking = form.save(commit=False)

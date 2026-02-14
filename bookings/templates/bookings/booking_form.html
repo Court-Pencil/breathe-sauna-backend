@@ -1,5 +1,6 @@
 {% extends "bookings/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 {% if object %}
@@ -11,10 +12,12 @@
 <div class="card">
   <div class="card-body">
 
-    <form method="post">
+    <form method="post" id="booking-form" data-validate-url="{% url 'validate_booking_form' %}">
       {% csrf_token %}
 
+      <div id="booking-form-fields">
       {{ form|crispy }}
+      </div>
 
       <div class="mt-3">
         {% if object %}
@@ -29,5 +32,10 @@
 
   </div>
 </div>
+<script src="{% static 'js/booking-validation.js' %}"></script>
+
+
 
 {% endblock %}
+
+
