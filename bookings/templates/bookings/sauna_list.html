@@ -4,10 +4,12 @@
 
 <div class="container py-4">
   <div class="row g-4">
+     <h1>Sauna List</h1>
     {% for sauna in saunas %}
       <div class="col-12 ">
         <div class="card mb-5">
           <div class="card-body">
+           
 
             <h2 class="mb-3 text-center">{{ sauna.name }}</h2>
             <p class="lead text-center">{{ sauna.description }}</p>
@@ -15,11 +17,11 @@
 
             <div class="row text-center mb-4">
               <div class="col-6">
-                <h6 class="mb-1">Capacity</h6>
+                <h3 class="mb-1 h6">Capacity</h3>
                 <p class="mb-0">{{ sauna.capacity }} people</p>
               </div>
               <div class="col-6">
-                <h6 class="mb-1">Price</h6>
+                <h3 class="mb-1 h6">Price</h3>
                 <p class="mb-0">£{{ sauna.price_per_hour }} per hour</p>
               </div>
             </div>

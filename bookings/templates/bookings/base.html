@@ -73,7 +73,7 @@
                     <li class="nav-item">
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-link nav-link">
+                            <button type="submit" class="btn btn-link nav-link" >
                                 Logout
                             </button>
                         </form>
@@ -115,22 +115,15 @@
     <footer class="footer mt-5 p-5">
     <div class='container'>
         <div class='row g-4'>
-            <!-- <div class='col-md-4'>
-                <h5 class="fw-bold mb-3">Breathe Sauna</h5>
-                <p> A calm space for heat therapy, recovery, and relaxation.
-                    Experience modern sauna wellness.
-                </p>
-
-            </div> -->
-
             <div class="col-md-4">
-                <h6 class="fw-bold mb-3">Opening Hours</h6>
+                <h1></h1>
+                <h2 class="fw-bold mb-3 h6">Opening Hours</h2>
                 <p class="mb-1">Monday – Sunday</p>
                 <p class="mb-0">9:00 AM – 6:00 PM</p>
             </div>
 
             <div class="col-md-4">
-                <h6 class="fw-bold mb-3">Contact</h6>
+                <h2 class="fw-bold mb-3 h6">Contact</h2>
 
                 <p class="mb-2">
                     <a href="mailto:breathesauna@sauna.com" class="footer-link">
@@ -146,7 +139,7 @@
             </div>
 
             <div class="col-md-4">
-                <h6 class="fw-bold mb-3">Quick links</h6>
+                <h2 class="fw-bold mb-3 h6">Quick links</h2>
                 <ul class="list-unstyled">
                     <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
                     <li><a href="{% url 'sauna' %}" class="footer-link">Saunas</a></li>

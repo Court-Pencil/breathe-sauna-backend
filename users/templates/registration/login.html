@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-body">
 
-        <h2 class="mb-4 text-center">Log In</h2>
+        <h1 class="mb-4 text-center h2">Log In</h1>
 
         <form method="POST">
           {% csrf_token %}
@@ -17,7 +17,7 @@
           {{ form|crispy }}
 
           <div class="d-grid mt-3">
-            <button class="btn btn-primary" type="submit">
+            <button class="btn btn-primary" type="submit" >
               Log In
             </button>
           </div>
