@@ -43,6 +43,7 @@ The application demonstrates backend development using Django, relational databa
   - [Languages](#languages)
   - [Libraries & Framework](#libraries-framework)
   - [Tools](#tools)
+- [Data Schema](#data-schema)
 - [Testing](#testing)
   - [Bugs Fixed](#bugs-fixed)
   - [Responsiveness Tests](#responsiveness-tests)
@@ -116,16 +117,16 @@ The application demonstrates backend development using Django, relational databa
 - Users seeking a simple reservation system
 
 
-## Wireframes /////////////////
+## Wireframes
 
 
 ### UX Design
 
+The wireframe for the Breathe Sauna project outlines a clean, calming, and user-focused booking experience across multiple screens, including Home, Our Saunas, Booking Form, Login, Register, and My Bookings. The design emphasizes simplicity and clarity, guiding users from learning about sauna benefits to selecting a sauna type, choosing a date and time, and managing their reservations. While the core layout and navigation structure remain consistent with the original concept, several elements evolved during development—such as refinements to the booking flow, updated form fields, and improved account management features—to enhance usability and responsiveness across devices. The overall wireframe reflects a minimal, wellness-inspired interface that supports an intuitive and seamless user journey.
 
-
-![Wireframe-Mobile](src/docs/)
-![Wireframe-Tablet](src/docs/)
-![Wireframe-Desktop](src/docs/)
+![Wireframe-Mobile](docs/wfc.webp) 
+![Wireframe-Tablet](docs/wfc-tablet.webp)
+![Wireframe-Desktop](docs/wfc-oc-laptop.webp)
 
 ## Design Choices
 
@@ -277,6 +278,174 @@ Automated reminder notifications could reduce missed appointments.
 - [WAVE Accessibility Tool](https://wave.webaim.org/ "WAVE Accessibility Tool")
 - [Am I Responsive](https://ui.dev/amiresponsive "Am I responsive")
 - [PostgreSQL](https://www.postgresql.org/)
+
+
+##Data Schema
+
+# Data Schema
+
+## Overview
+The sauna booking system uses three main data models to manage bookings: **Sauna**, **TimeSlot**, and **Booking**. These models work together to enable users to reserve sauna sessions for specific dates and times while preventing overbooking.
+
+## Database Models
+
+### 1. Sauna Model
+Represents physical sauna rooms available for booking.
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each sauna |
+| `name` | CharField(100) | Required | Name of the sauna room |
+| `display_order` | PositiveInteger | Default: 0 | Controls the order saunas appear in the UI |
+| `capacity` | Integer | Default: 6 | Maximum number of guests allowed |
+| `description` | TextField | Required | Detailed description of the sauna |
+| `price_per_hour` | Decimal(6,2) | Required | Hourly rental price |
+| `is_active` | Boolean | Default: True | Whether the sauna is currently available for booking |
+
+**Ordering:** Saunas are ordered by `display_order` field.
+
+---
+
+### 2. TimeSlot Model
+Defines available time periods for bookings (reusable across dates).
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each time slot |
+| `start_time` | TimeField | Required | Start time (e.g., 09:00) |
+| `end_time` | TimeField | Required | End time (e.g., 10:00) |
+| `is_available` | Boolean | Default: True | Allows admins to disable slots (holidays/maintenance) |
+
+**Constraints:**
+- Unique combination of `start_time` and `end_time` (prevents duplicate slots)
+
+**Ordering:** Time slots are ordered chronologically by `start_time`.
+
+---
+
+### 3. Booking Model
+The core model linking users, saunas, dates, and time slots.
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each booking |
+| `user` | ForeignKey(User) | CASCADE, Required | Reference to Django User model |
+| `sauna` | ForeignKey(Sauna) | CASCADE, Required | Which sauna is being booked |
+| `time_slot` | ForeignKey(TimeSlot) | CASCADE, Required | Which time slot is being booked |
+| `booking_date` | DateField | Required | The specific date of the booking |
+| `status` | CharField(20) | Choices, Default: 'pending' | Current booking status |
+| `number_of_guests` | Integer | Default: 1 | Number of guests attending |
+| `special_requests` | TextField | Optional (blank/null) | Additional notes or requests |
+| `created_at` | DateTimeField | Auto-set on creation | When the booking was created |
+| `updated_at` | DateTimeField | Auto-updated | Last modification timestamp |
+
+**Status Choices:**
+- `pending` - Booking awaiting confirmation
+- `confirmed` - Booking confirmed and active
+- `cancelled` - Booking has been cancelled
+- `completed` - Booking has been fulfilled
+
+**Ordering:** Bookings are ordered by date (descending) then by time slot start time (descending).
+
+---
+
+## Relationships
+
+```
+User (Django built-in)
+  |
+  | 1:N (One user can have many bookings)
+  |
+  ↓
+Booking ←─────┐
+  |           |
+  | N:1       | N:1
+  |           |
+  ↓           ↓
+Sauna     TimeSlot
+```
+
+### Relationship Details
+
+1. **User → Booking** (One-to-Many)
+   - One user can create multiple bookings
+   - Related name: `user.bookings.all()`
+   - Deletion: CASCADE (deleting a user deletes their bookings)
+
+2. **Sauna → Booking** (One-to-Many)
+   - One sauna can have multiple bookings
+   - Related name: `sauna.bookings.all()`
+   - Deletion: CASCADE (deleting a sauna deletes associated bookings)
+
+3. **TimeSlot → Booking** (One-to-Many)
+   - One time slot can be used across multiple bookings (different dates/saunas)
+   - Deletion: CASCADE (deleting a time slot deletes bookings using it)
+
+---
+
+## Business Rules & Validation
+
+### Booking Validation Rules
+
+The `Booking` model enforces several important business rules through the `clean()` method:
+
+1. **No Past Bookings**
+   - `booking_date` must not be in the past
+   - Prevents booking historical dates
+
+2. **Capacity Validation**
+   - `number_of_guests` cannot exceed `sauna.capacity`
+   - Example: If sauna capacity is 6, cannot book for 7 guests
+
+3. **Prevent Overbooking**
+   - Checks existing bookings for the same sauna, date, and time slot
+   - Sums up `number_of_guests` from all active bookings (pending/confirmed)
+   - Ensures total guests don't exceed sauna capacity
+   - Example: If capacity is 6 and 4 spots are booked, only 2 more guests can be added
+   - Excludes cancelled bookings from the count
+   - Excludes the current booking when updating (uses `exclude(pk=self.pk)`)
+
+4. **Auto-Validation on Save**
+   - The `save()` method automatically calls `clean()` before saving
+   - Raises `ValidationError` if any rule is violated
+
+---
+
+## Data Flow Example
+
+**Scenario:** User wants to book a sauna
+
+1. User selects:
+   - Sauna: "Finnish Sauna" (capacity: 6)
+   - Date: 2026-02-15
+   - Time Slot: 14:00 - 15:00
+   - Guests: 3
+
+2. System checks:
+   - ✓ Date is not in the past
+   - ✓ 3 guests ≤ 6 capacity
+   - ✓ Existing bookings for same sauna/date/time = 2 guests
+   - ✓ Total (2 + 3 = 5) ≤ 6 capacity
+   - ✓ Booking allowed
+
+3. Booking created with:
+   - Status: 'pending'
+   - Foreign keys linking User, Sauna, TimeSlot
+   - Timestamp in `created_at`
+
+---
+
+## Key Design Decisions
+
+1. **TimeSlot Reusability:** Time slots are date-independent, allowing the same time slots to be reused across multiple days without duplication.
+
+2. **Soft Availability:** Both `Sauna.is_active` and `TimeSlot.is_available` allow admins to temporarily disable options without deleting data.
+
+3. **Guest Counting:** The system tracks individual guest counts rather than just "number of bookings," enabling partial capacity bookings.
+
+4. **Status Workflow:** Four distinct statuses enable tracking bookings through their lifecycle from creation to completion.
+
+5. **Automatic Validation:** Critical business rules are enforced at the model level, ensuring data integrity regardless of which interface creates the booking.
 
 ## Testing
 
