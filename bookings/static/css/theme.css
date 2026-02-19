@@ -153,7 +153,6 @@ h1,h2,h3,h4{
 
 #header{
    position: relative;
-  height: 100vh;
   overflow: hidden;
   text-align: center;
 
@@ -286,14 +285,8 @@ hr, .border{
   text-decoration: underline;
 }
 
-/* @media screen and (max-width: 425px) {
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    justify-content: flex-start;
-    margin-top: 2rem;
-} */
+@media screen and (max-width: 425px) {
+
 
 
 .hero{
@@ -323,16 +316,15 @@ hr, .border{
     font-weight: 300;
     line-height: 1.2;
   }
+}
 
-
-@media screen  and (min-width: 768px)  { 
+@media (min-width: 768px)  { 
   .cta-banner{
     background-position: center 60%;
   }
-  
-  #header{
-    height: none;
-  }
+   .hero-content{
+    padding: 3rem;
+   }
   .hero-text{
     display: flex;
     flex-direction: column;
