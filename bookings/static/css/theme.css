@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap');
 :root{
   --cream: #F5F3EE;
   --chestnut: #8B4A2F;
@@ -14,6 +14,7 @@
   --border-soft: rgba(168, 159, 150, 0.35);
   --shadow-soft: 0 12px 30px rgba(0,0,0,.08);
 
+  --heading-font: Nanum Myeongjo;
   --btn-radius: 14px;
   --card-radius: 24px;
 
@@ -46,6 +47,10 @@ body{
   grid-template-rows: auto 1fr auto;
 }
 
+h1, h2, .navbar-brand {
+  font-family: var(--heading-font);
+}
+
 h1,h2,h3,h4{
   color: var(--chestnut);
   font-weight: 800;
@@ -54,6 +59,7 @@ h1,h2,h3,h4{
 
 .lead{
   color: var(--text-muted);
+  font-weight: 400;
 }
 
 .navbar{
@@ -185,6 +191,7 @@ h1,h2,h3,h4{
   text-align: center;
 }
 
+
 .hero h1{
   color: var(--cream);
   text-shadow: 2px 2px 5px var(--dark-walnut);
@@ -279,6 +286,62 @@ hr, .border{
   text-decoration: underline;
 }
 
-@media screen { min-width: 768px;
+/* @media screen and (max-width: 425px) {
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: flex-start;
+    margin-top: 2rem;
+} */
+
+
+.hero{
+  position: relative;
+  min-height: 620px;
+  place-items: baseline;
+  overflow: hidden;
+}
+
+.hero-text{
+         display: grid;
+        flex-direction: column;
+        height: 60vh;
+        justify-content: flex-start;
+        margin-top: 4rem;
+ }
+  .btn-primary {
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome, .section{
+    padding: 2rem 0;
+  }
+
+  h1 {
+    font-size: calc(1.525rem + 3.3vw);
+    font-weight: 300;
+    line-height: 1.2;
+  }
+
+
+@media screen  and (min-width: 768px)  { 
+  .cta-banner{
+    background-position: center 60%;
+  }
   
+  #header{
+    height: none;
+  }
+  .hero-text{
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    justify-content: flex-start;
+    margin-top: 4rem;
+  }
+
+  .hero-text h1{
+    margin-bottom: 3rem !important;
+  }
 }

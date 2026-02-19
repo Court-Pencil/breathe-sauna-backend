@@ -8,12 +8,13 @@
 <header class="hero rounded-4"
   style="background: url('{% static "images/lg-sauna-hero.webp" %}') bottom/cover no-repeat;">
   <div class="hero-content container text-center">
+    <div class="hero-text">
     <h1 class="display-2 fw-bold mb-3">Take Time to Breathe</h1>
     <p class="lead mb-4 fw-bold">
       Step away from the noise into the warmth. <br>
        Your time to relax is waiting.
     </p>
-
+    </div>
     {% if user.is_authenticated %}
 
        
@@ -38,7 +39,7 @@
 </header>
 </section>
 
-<section class="section">
+<section class="section welcome">
   <div class="container">
     <div class="row align-items-center g-5">
 

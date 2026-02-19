@@ -15,7 +15,10 @@
            
 
             <h2 class="mb-3 text-center">{{ sauna.name }}</h2>
-            <p class="lead text-center">{{ sauna.description }}</p>
+            
+            <div class="lead text-md-center d-block d-md-none">{{ sauna.description|linebreaks  }}</div>
+            <p class="lead text-md-center d-none d-md-block">{{ sauna.description }}</p>
+            
             <hr>
 
             <div class="row text-center mb-4">
