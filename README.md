@@ -55,9 +55,9 @@ The application demonstrates backend development using Django, relational databa
     - [Javascript](#javascript)
   - [User Story Testing](#user-story-testing)
   - [Feature Testing](#feature-testing)
-  - [Acessibility Testing](#acessibility-testing)
+  - [Accessibility Testing](#accessibility-testing)
   - [Lighthouse Testing](#lighthouse-testing)
-  - [Brower Testing](#browser-testing)
+  - [Browser Testing](#browser-testing)
 - [Deployment](#deployment)
   - [To deploy the project](#deploy-project)
   - [To fork the project](#fork-project)
@@ -209,7 +209,7 @@ A dedicated sauna information page displays details such as capacity, descriptio
 
 The application implements real-time validation using AJAX to provide instant feedback on sauna availability and remaining capacity, allowing users to see available spots before submitting their booking and reducing the risk of overbooking errors.
 
-### Real time feedback
+### Real-Time Feedback
 
 When users attempt to create a booking, the system immediately checks for:
 
@@ -411,6 +411,7 @@ Accessibility-related validation errors further improved awareness of semantic H
 
 Overall, resolving these bugs reflects a clear progression in technical understanding, particularly in database design, defensive validation, deployment configuration, and accessibility best practices. The debugging process contributed directly to a more robust, secure, and production-ready application.
 
+
 ### Responsiveness Tests
 
 
@@ -516,8 +517,22 @@ Overall, resolving these bugs reflects a clear progression in technical understa
 | **Result** | Pass |
 | **Evidence** | [Responsive screenshots](docs/ust-validation-6.png) |
 
+## Security Considerations
 
-## Admin Access Testing
+Security was considered throughout development and deployment.
+
+The following measures were implemented:
+
+- Django’s built-in authentication system for secure user registration and login.
+- Booking functionality restricted to authenticated users only.
+- Admin panel access limited to users with `is_staff` privileges.
+- Environment variables used to store secret keys and database credentials.
+- Sensitive files excluded via `.gitignore`.
+- `DEBUG` mode disabled in production.
+- Production database configured using `DATABASE_URL`.
+- CSRF protection enabled via Django middleware.
+
+### Admin Access Testing
 
 | Test Case           | Description                                                          |
 | ------------------- | -------------------------------------------------------------------- |
@@ -526,9 +541,9 @@ Overall, resolving these bugs reflects a clear progression in technical understa
 | **Expected Result** | Access denied and user prompted to log in with a staff account.      |
 | **Actual Result**   | Access was denied as expected.                                       |
 | **Status**          | Pass                                                                 |
-| **Evidence** | [Responsive screenshots](docs/admin-acess-testing.png) |
+| **Evidence**        | [Screenshot](docs/admin-acess-testing.png) |
 
-This confirms that Django’s built-in permission system correctly restricts admin access to users with staff privileges.
+This confirms that Django’s built-in permission system correctly restricts admin access to users with appropriate privileges.
 
 ## Code Validation
 
@@ -546,9 +561,9 @@ I have used [W3C HTML Validation Service](https://validator.w3.org/). The tests 
 
 ### Javascript 
 
-The file `booking-validation.js` was validated by ESlint through VSCode plug-in. ESLint was used to ensure code quality and identify potential issues during development. 0 errors was identified.
+The file `booking-validation.js` was validated by ESLint through VSCode plug-in. ESLint was used to ensure code quality and identify potential issues during development. 0 errors was identified.
 
-![ESlint Validation image](docs/eslint-validation.png)
+![ESLint Validation image](docs/eslint-validation.png)
 
 ## Accessibility Testing
 
@@ -591,8 +606,59 @@ The Breathe Sauna Project has been tested in Chrome Dev Tools using Lighthouse T
 ## Desktop chrome Dev tools testing:
 ![lighthouse testing image index](docs/desktop-lighthouse-testing.png)
  
+
 ## Known Issues / Limitations
 
+Although the application is fully functional and stable in its deployed state, several minor limitations were identified during testing and evaluation. Responsive testing revealed small layout inconsistencies on specific devices (e.g., button positioning on Pixel 9 and text alignment variations on certain iPad breakpoints). These issues are cosmetic rather than functional and do not impact booking logic, data integrity, or user authentication. Further CSS refinement and breakpoint optimisation would fully resolve these discrepancies.
+
+Accessibility testing using WAVE identified low colour contrast warnings. While the current palette aligns with the project’s wellness-focused brand identity, minor adjustments could improve WCAG compliance without significantly altering the visual design. This trade-off between branding and accessibility was considered during evaluation.
+
+In terms of functionality, the current implementation does not include integrated online payment processing or automated booking confirmation emails. These features were intentionally scoped as future enhancements to prioritise core CRUD functionality, security, and validation logic during initial development.
+
+All identified limitations have been documented transparently. Importantly, none affect the robustness, security, or business-rule enforcement of the booking system. The application remains stable, secure, and aligned with its intended purpose, while leaving clear opportunities for future iteration and scalability.
+
+
+## Defensive Programming
+
+Defensive programming principles were applied throughout development to ensure the system handles errors gracefully and maintains data integrity.
+
+### Validation & Data Protection Measures
+
+The application implements:
+
+- **Server-side validation** to prevent bookings in the past.
+- **Aggregation validation** using `Sum()` to prevent exceeding sauna capacity.
+- **Authentication checks** to restrict booking creation to logged-in users.
+- **Permission enforcement** to prevent unauthorised admin access.
+- **Graceful error messaging** to inform users of validation failures.
+- **Environment variable protection** for sensitive configuration.
+
+All user input is validated before database operations are performed. Where validation fails, the system provides clear and actionable feedback rather than exposing internal errors.
+
+### Outcome
+
+This approach ensures that:
+
+- Business rules cannot be bypassed.
+- Logical conflicts are prevented.
+- The application remains stable under incorrect user input.
+
+## Version Control Strategy
+
+### Version Control and Development Process
+
+The project was developed using **Git** for version control throughout the development lifecycle.
+
+Development followed industry best practice by:
+
+- Making **small, incremental commits** for individual features and bug fixes.
+- Writing **clear, descriptive commit messages** that explain the purpose of each change.
+- Avoiding large commits that obscure development history.
+- Maintaining a logical and traceable development timeline.
+
+Each major feature — including authentication, booking validation, deployment configuration, and accessibility fixes — was committed separately. This approach allows clear tracking of progress and demonstrates an iterative development process.
+
+The structured commit history provides transparency in development and aligns with professional software engineering standards.
 
 ## Deployment
 

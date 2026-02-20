@@ -45,9 +45,10 @@
                 <!-- Left Navigation -->
                 <ul class="navbar-nav me-auto">
 
+                    {% url 'home' as home_url %}
                     <li class="nav-item">
-                         <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-                            href="{% url 'home' %}">
+                        <a class="nav-link {% if request.path == home_url %}active{% endif %}"
+                            href="{{ home_url }}">
                             Home
                         </a>
                     </li>
