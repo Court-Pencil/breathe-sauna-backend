@@ -16,7 +16,7 @@
     <link href="{% static 'css/theme.css' %}" rel="stylesheet">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -116,7 +116,7 @@
     </nav>
 
     <!-- Main Content Container -->
-    <main class="container mt-4 page-content">
+    <main class="container mt-4 page-content flex-grow-1">
 
         <!-- Django Messages -->
         {% if messages %}
@@ -132,7 +132,7 @@
         {% endblock %}
 
     </main>
-    <footer class="footer p-5">
+    <footer class="footer p-5 mt-auto">
     <div class='container'>
         <div class='row g-4'>
             <div class="col-md-4">
