@@ -58,7 +58,8 @@ The application demonstrates backend development using Django, relational databa
   - [Accessibility Testing](#accessibility-testing)
   - [Lighthouse Testing](#lighthouse-testing)
   - [Browser Testing](#browser-testing)
--
+- [Security Considerations](#security-considerations)
+- [Defensive Programming](#defensive-programming)
 - [Deployment](#deployment)
   - [To deploy the project](#deploy-project)
   - [To fork the project](#fork-project)
