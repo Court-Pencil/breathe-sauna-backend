@@ -5,12 +5,14 @@
 
 ## Project Overview
 
-[Breathe Sauna](https://court-pencil.github.io//)
+[Breathe Sauna](https://sauna-project-ad449af7f2fb.herokuapp.com/)
 
-Breathe Sauna Booking System is a full-stack Django web application that allows users to register, log in, and book time slots for a sauna session. The system is designed to provide a smooth booking experience while enforcing important business rules such as preventing double bookings and exceeding sauna capacity.
+Breathe Sauna is a full-stack Django booking application designed to provide users with a seamless and intuitive sauna reservation experience. The system enables users to register, securely log in, and book available time slots while ensuring that business rules — such as preventing overbooking and exceeding sauna capacity — are strictly enforced.
 
-Users can view sauna information, create bookings, and manage their reservations through a secure authentication system. Administrators can manage availability, time slots, and bookings through Django’s built-in admin panel.
-![image of website on all screen sizes](src/docs/)
+The application dynamically validates booking capacity, ensuring that multiple reservations can be made per time slot without surpassing the maximum number of guests allowed. Users can view sauna information, create and manage bookings, and update or cancel their reservations through an authenticated account system. Administrative functionality is handled via Django’s built-in admin panel, allowing management of saunas, time slots, and booking records.
+
+The interface is fully responsive and adapts across mobile, tablet, and desktop devices to maintain usability and accessibility across different screen sizes.
+![image of website on all screen sizes](docs/ust-validation-6.png)
 
 ## Project Rationale
 This project was created to simulate a real-world booking system for a small business. Many booking systems are overly complex for single-location services. This project focuses on creating a streamlined, user-friendly experience that allows customers to reserve sessions quickly and reliably.
@@ -31,13 +33,13 @@ The application demonstrates backend development using Django, relational databa
   - [Responsiveness](#responsiveness)
 - [Features](#features)
   - [Existing Features](#existing-features)
-    - [StartScreen](#start-screen)
-    - [Quiz questions](#quiz-questions)
-    - [Real time feedback](#real-time-feedback)
-    - [Score tracking](#score-tracking)
-    - [Replay Button](#replay-again)
-    - [Thematic styling](#thematic-styling)
-    - [End Screen](#end-screen)
+  - [User Authentication](#user-authentication)
+  - [Sauna Information Page](#sauna-information-page)
+  - [Real-Time Validation (AJAX)](#real-time-validation-ajax)
+  - [Booking System](#booking-system)
+  - [My Bookings Dashboard](#my-bookings-dashboard)
+  - [Admin Management Panel](#admin-management-panel)
+  - [Responsive Design](#responsive-design)
   - [Future Enhancements](#future-enhancements)
 - [Technologies Used](#tech-used)
   - [Languages](#languages)
@@ -132,10 +134,13 @@ The wireframe for the Breathe Sauna project outlines a clean, calming, and user-
 
 ### Typography
 
-The primary font used throughout the project is **Merriweather Sans**. This typeface was chosen for its clean, modern appearance and high readability across different screen sizes. Merriweather Sans balances professionalism with warmth, which aligns with the calm and welcoming atmosphere expected from a wellness-focused sauna brand.
+The project uses a combination of Merriweather Sans and Nanum Myeongjo to create a balanced and visually cohesive design.
 
-The font performs well on both desktop and mobile devices, ensuring text remains legible in booking forms, navigation menus, and informational content. Its simple sans-serif structure reduces visual clutter and improves accessibility, making it easier for users to scan and understand important booking information quickly.
+Merriweather Sans serves as the primary font for navigation, forms, and core interface elements. Its clean, modern sans-serif structure ensures excellent readability across all screen sizes, particularly in booking forms and menus where clarity is essential. The simplicity of the typeface reduces visual clutter and supports accessibility by allowing users to quickly scan and interpret important information.
 
+Nanum Myeongjo is used as a complementary serif font to introduce warmth and elegance into headings and key content areas. Its refined, traditional style adds a subtle sense of calm and sophistication, reinforcing the wellness-focused identity of the sauna brand. The contrast between the structured sans-serif and the softer serif typography creates visual hierarchy while maintaining a welcoming and professional aesthetic.
+
+Together, these fonts enhance usability, readability, and brand consistency across both desktop and mobile devices.
 
 
 ### Colour Scheme
@@ -192,12 +197,17 @@ The system uses a mobile-first responsive design, ensuring the booking experienc
 
 ### User Authentication
 
-Secure registration and login using Django’s built-in authentication system. Only logged-in users can create and manage bookings, protecting user data and preventing unauthorised access.
+Secure registration and login using Django’s built-in authentication system. Only logged-in users can create and manage bookings, protecting user data and preventing unauthorised access. Administrative access is restricted to authorised users through Django’s admin interface, maintaining secure management of saunas, time slots, and booking records.
 
 
 ### Sauna Information Page
 
 A dedicated sauna information page displays details such as capacity, description, and price. This gives users a clear understanding of what they are booking before committing.
+
+
+### Real-Time Validation (AJAX)
+
+The application implements real-time validation using AJAX to provide instant feedback on sauna availability and remaining capacity, allowing users to see available spots before submitting their booking and reducing the risk of overbooking errors.
 
 ### Real time feedback
 
@@ -210,6 +220,7 @@ Double bookings
 Capacity limits
 
 Clear error messages are displayed if a rule is violated, helping users correct mistakes instantly.
+
 
 ### Booking System
 
@@ -259,6 +270,7 @@ Automated reminder notifications could reduce missed appointments.
 - HTML
 - CSS
 - Python
+- JavaScript
 
 ### Libraries & Framework
 
@@ -272,11 +284,10 @@ Automated reminder notifications could reduce missed appointments.
 ### Tools
 
 - [Github](https://github.com/)
-- [Balsamiq](https://balsamiq.com/)
+- [Polypane](https://polypane.app/)
 - [W3C HTML Validation Service](https://validator.w3.org/)
 - [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/)
 - [WAVE Accessibility Tool](https://wave.webaim.org/ "WAVE Accessibility Tool")
-- [Am I Responsive](https://ui.dev/amiresponsive "Am I responsive")
 - [PostgreSQL](https://www.postgresql.org/)
 
 
@@ -287,169 +298,118 @@ Automated reminder notifications could reduce missed appointments.
 ## Overview
 The sauna booking system uses three main data models to manage bookings: **Sauna**, **TimeSlot**, and **Booking**. These models work together to enable users to reserve sauna sessions for specific dates and times while preventing overbooking.
 
-## Database Models
+┌──────────────────────────┐
+│           USER           │   
+├──────────────────────────┤
+│ id (PK)                  │
+│ username                 │
+│ email                    │
+│ password                 │
+│ is_staff                 │
+│ is_active                │
+│ date_joined              │
+└─────────────┬────────────┘
+              │
+              │ 1 : N
+              │ (a user can have many bookings)
+              │
+┌─────────────▼────────────┐
+│          BOOKING         │
+├──────────────────────────┤
+│ id (PK)                  │
+│ user_id (FK)             │ → USER.id
+│ sauna_id (FK)            │ → SAUNA.id
+│ time_slot_id (FK)        │ → TIMESLOT.id
+│ booking_date             │
+│ status                   │  pending|confirmed|cancelled|completed
+│ number_of_guests         │
+│ special_requests         │  (nullable)
+│ created_at               │
+│ updated_at               │
+└───────────┬───────┬──────┘
+            │       │
+            │ N:1   │ N:1
+            │       │
+┌───────────▼───┐  ┌▼───────────────────────┐
+│     SAUNA      │  │        TIMESLOT        │
+├────────────────┤  ├────────────────────────┤
+│ id (PK)        │  │ id (PK)                │
+│ name           │  │ start_time             │
+│ display_order  │  │ end_time               │
+│ capacity       │  │ is_available           │
+│ description    │  └────────────────────────┘
+│ price_per_hour │
+│ is_active      │
+└────────────────┘
 
-### 1. Sauna Model
-Represents physical sauna rooms available for booking.
-
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each sauna |
-| `name` | CharField(100) | Required | Name of the sauna room |
-| `display_order` | PositiveInteger | Default: 0 | Controls the order saunas appear in the UI |
-| `capacity` | Integer | Default: 6 | Maximum number of guests allowed |
-| `description` | TextField | Required | Detailed description of the sauna |
-| `price_per_hour` | Decimal(6,2) | Required | Hourly rental price |
-| `is_active` | Boolean | Default: True | Whether the sauna is currently available for booking |
-
-**Ordering:** Saunas are ordered by `display_order` field.
-
----
-
-### 2. TimeSlot Model
-Defines available time periods for bookings (reusable across dates).
-
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each time slot |
-| `start_time` | TimeField | Required | Start time (e.g., 09:00) |
-| `end_time` | TimeField | Required | End time (e.g., 10:00) |
-| `is_available` | Boolean | Default: True | Allows admins to disable slots (holidays/maintenance) |
-
-**Constraints:**
-- Unique combination of `start_time` and `end_time` (prevents duplicate slots)
-
-**Ordering:** Time slots are ordered chronologically by `start_time`.
-
----
-
-### 3. Booking Model
-The core model linking users, saunas, dates, and time slots.
-
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | Integer | Primary Key, Auto-increment | Unique identifier for each booking |
-| `user` | ForeignKey(User) | CASCADE, Required | Reference to Django User model |
-| `sauna` | ForeignKey(Sauna) | CASCADE, Required | Which sauna is being booked |
-| `time_slot` | ForeignKey(TimeSlot) | CASCADE, Required | Which time slot is being booked |
-| `booking_date` | DateField | Required | The specific date of the booking |
-| `status` | CharField(20) | Choices, Default: 'pending' | Current booking status |
-| `number_of_guests` | Integer | Default: 1 | Number of guests attending |
-| `special_requests` | TextField | Optional (blank/null) | Additional notes or requests |
-| `created_at` | DateTimeField | Auto-set on creation | When the booking was created |
-| `updated_at` | DateTimeField | Auto-updated | Last modification timestamp |
-
-**Status Choices:**
-- `pending` - Booking awaiting confirmation
-- `confirmed` - Booking confirmed and active
-- `cancelled` - Booking has been cancelled
-- `completed` - Booking has been fulfilled
-
-**Ordering:** Bookings are ordered by date (descending) then by time slot start time (descending).
-
----
-
-## Relationships
-
-```
-User (Django built-in)
-  |
-  | 1:N (One user can have many bookings)
-  |
-  ↓
-Booking ←─────┐
-  |           |
-  | N:1       | N:1
-  |           |
-  ↓           ↓
-Sauna     TimeSlot
-```
-
-### Relationship Details
-
-1. **User → Booking** (One-to-Many)
-   - One user can create multiple bookings
-   - Related name: `user.bookings.all()`
-   - Deletion: CASCADE (deleting a user deletes their bookings)
-
-2. **Sauna → Booking** (One-to-Many)
-   - One sauna can have multiple bookings
-   - Related name: `sauna.bookings.all()`
-   - Deletion: CASCADE (deleting a sauna deletes associated bookings)
-
-3. **TimeSlot → Booking** (One-to-Many)
-   - One time slot can be used across multiple bookings (different dates/saunas)
-   - Deletion: CASCADE (deleting a time slot deletes bookings using it)
-
----
-
-## Business Rules & Validation
-
-### Booking Validation Rules
-
-The `Booking` model enforces several important business rules through the `clean()` method:
-
-1. **No Past Bookings**
-   - `booking_date` must not be in the past
-   - Prevents booking historical dates
-
-2. **Capacity Validation**
-   - `number_of_guests` cannot exceed `sauna.capacity`
-   - Example: If sauna capacity is 6, cannot book for 7 guests
-
-3. **Prevent Overbooking**
-   - Checks existing bookings for the same sauna, date, and time slot
-   - Sums up `number_of_guests` from all active bookings (pending/confirmed)
-   - Ensures total guests don't exceed sauna capacity
-   - Example: If capacity is 6 and 4 spots are booked, only 2 more guests can be added
-   - Excludes cancelled bookings from the count
-   - Excludes the current booking when updating (uses `exclude(pk=self.pk)`)
-
-4. **Auto-Validation on Save**
-   - The `save()` method automatically calls `clean()` before saving
-   - Raises `ValidationError` if any rule is violated
-
----
-
-## Data Flow Example
-
-**Scenario:** User wants to book a sauna
-
-1. User selects:
-   - Sauna: "Finnish Sauna" (capacity: 6)
-   - Date: 2026-02-15
-   - Time Slot: 14:00 - 15:00
-   - Guests: 3
-
-2. System checks:
-   - ✓ Date is not in the past
-   - ✓ 3 guests ≤ 6 capacity
-   - ✓ Existing bookings for same sauna/date/time = 2 guests
-   - ✓ Total (2 + 3 = 5) ≤ 6 capacity
-   - ✓ Booking allowed
-
-3. Booking created with:
-   - Status: 'pending'
-   - Foreign keys linking User, Sauna, TimeSlot
-   - Timestamp in `created_at`
-
----
-
-## Key Design Decisions
-
-1. **TimeSlot Reusability:** Time slots are date-independent, allowing the same time slots to be reused across multiple days without duplication.
-
-2. **Soft Availability:** Both `Sauna.is_active` and `TimeSlot.is_available` allow admins to temporarily disable options without deleting data.
-
-3. **Guest Counting:** The system tracks individual guest counts rather than just "number of bookings," enabling partial capacity bookings.
-
-4. **Status Workflow:** Four distinct statuses enable tracking bookings through their lifecycle from creation to completion.
-
-5. **Automatic Validation:** Critical business rules are enforced at the model level, ensuring data integrity regardless of which interface creates the booking.
+Constraints / Notes:
+- TIMESLOT has UK (unique key): (start_time, end_time)
+- Booking capacity rule (application-level):
+  For a given (sauna, booking_date, time_slot),
+  sum(number_of_guests) for status in {pending, confirmed}
+  must be <= sauna.capacity.
+- Booking cannot be in the past (validated in clean()).
+- BOOKING.user is required in your model (NOT nullable).
+  (So guest bookings are not supported unless you change user FK to null=True, blank=True.)
 
 ## Testing
 
 ## Bugs
+
+| Category               | Details                                                                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Bug Description**    | Only one booking was allowed per sauna, date, and time slot.                                                                    |
+| **Cause**              | A `unique_together` constraint on (`sauna`, `booking_date`, `time_slot`) prevented multiple bookings at database level.         |
+| **Expected Behaviour** | Multiple bookings should be allowed per time slot, limited only by sauna capacity.                                              |
+| **Fix Implemented**    | Removed the `unique_together` constraint and implemented capacity validation using `Sum()` aggregation in the `clean()` method. |
+| **Learning Outcome**   | Gained understanding of the difference between database-level constraints and application-level business logic.                 |
+| **Status**             | Resolved                                                                                                                        |
+
+| Category               | Details                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Bug Description**    | Users were able to collectively exceed sauna capacity for the same time slot.                                 |
+| **Cause**              | Capacity validation did not account for the total number of guests across multiple bookings.                  |
+| **Expected Behaviour** | Total guests across all bookings for a time slot should not exceed sauna capacity.                            |
+| **Fix Implemented**    | Added aggregation logic using `Sum('number_of_guests')` to calculate existing guests before allowing booking. |
+| **Learning Outcome**   | Improved understanding of query aggregation and server-side validation to prevent logical conflicts.          |
+| **Status**             | Resolved                                                                                                      |
+
+| Category               | Details                                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Bug Description**    | CSS and JavaScript files failed to load after deployment to Heroku.                                        |
+| **Cause**              | WhiteNoise was not configured correctly in middleware and static settings.                                 |
+| **Expected Behaviour** | Static assets should load correctly in production environment.                                             |
+| **Fix Implemented**    | Installed WhiteNoise, updated middleware configuration, and ensured static settings were properly defined. |
+| **Learning Outcome**   | Developed understanding of Django static file handling and production deployment configuration.            |
+| **Status**             | Resolved                                                                                                   |
+
+| Category               | Details                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| **Bug Description**    | Application failed to connect to Heroku Postgres database after deployment.                 |
+| **Cause**              | Local SQLite configuration was being used instead of environment-based database settings.   |
+| **Expected Behaviour** | Application should connect to production database using `DATABASE_URL`.                     |
+| **Fix Implemented**    | Integrated `dj_database_url` and updated `settings.py` to use environment variables.        |
+| **Learning Outcome**   | Gained experience working with environment variables and production database configuration. |
+| **Status**             | Resolved                                                                                    |
+
+| Category               | Details                                                                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bug Description**    | HTML validator flagged invalid ARIA attributes in navigation toggle button.                                                                  |
+| **Cause**              | Incorrect use of `aria-describedby` with plain text and unnecessary `role="navigation"` on button element.                                   |
+| **Expected Behaviour** | Navigation should use semantic HTML with valid ARIA attributes.                                                                              |
+| **Fix Implemented**    | Removed invalid ARIA attributes and implemented correct Bootstrap accessibility attributes (`aria-controls`, `aria-expanded`, `aria-label`). |
+| **Learning Outcome**   | Improved understanding of semantic HTML and proper ARIA usage for accessibility compliance (WCAG).                                           |
+| **Status**             | Resolved                                                                                                                                     |
+
+## Bug testing reflection
+
+The initial use of a unique_together constraint highlighted a misunderstanding between database-level constraints and business logic requirements. Refactoring this to implement capacity validation using Django ORM aggregation (Sum) improved the system design and ensured bookings were limited by sauna capacity rather than a restrictive uniqueness rule. This demonstrates an improved understanding of relational databases and server-side validation.
+
+Deployment issues, including static file configuration and database connection errors, required the implementation of WhiteNoise and environment-based database settings using dj_database_url. Resolving these issues strengthened understanding of production configuration, environment variables, and the differences between local and deployed environments — a key full-stack development competency.
+
+Accessibility-related validation errors further improved awareness of semantic HTML and correct ARIA implementation, ensuring compliance with WCAG 2.2 standards and improving overall usability.
+
+Overall, resolving these bugs reflects a clear progression in technical understanding, particularly in database design, defensive validation, deployment configuration, and accessibility best practices. The debugging process contributed directly to a more robust, secure, and production-ready application.
 
 ### Responsiveness Tests
 
@@ -458,22 +418,17 @@ The `Booking` model enforces several important business rules through the `clean
 | Device / Screen Size | Expected Behaviour                      | Actual Result                                     | Pass/Fail | Notes             |
 |----------------------|-----------------------------------------|---------------------------------------------------|-----------|-------------------|
 | iPhone SE            | Layout fits screen, buttons easy to tap | Works as expected                                 | Pass      |                   |
-| iPhone 12            | No overflow, text readable              | Works as expected                                 | Pass      |                   |
-| Pixel 7              | Buttons scale correctly, no clipping    | Works as expected                                 | Pass      |                   |
-| iPad mini            | Layout expands but stays centred        | Works as expected                                 | Pass      |                   |
-| iPad Pro             | Content does not stretch too wide       | opposite problem little too small on the screen   | Fail      | Working in progress |
+| iPhone 14            | No overflow, text readable              | Works as expected                                 | Pass      |                   |
+| Pixel 9              | Buttons scale correctly, no clipping    | button sticks to bottom of hero image                                | Fail      |  Work in progress    |
+| iPad            | Layout expands but stays centred        | p text higher than expected                               | Fail     |  Work in progress                 |
+| iPad Pro             | Content does not stretch too wide       | Works as expected    | Pass     |           |
 | Nest Hub             | Fully readable, centred content         | Works as expected                                 | Pass      |                   |
-| Next Hub Max         | Max-width applied, UI stable            | Works as expected, little too small on the screen | Fail      | Work in progress |
+| Next Hub Max         | Max-width applied, UI stable            | Works as expected | Pass    |       |
 
 
 ## Manual Testing ()
 
-
-
-
 ### User Story BDD Testing
-
----
 
 ### User Story 1 — Register an account
 
@@ -485,7 +440,7 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | They enter valid details and submit the form |
 | **Then** | A new account is created and the user is redirected with a success message |
 | **Result** | Pass |
-| **Evidence** | [Screenshot of successful registration](docs/user-story-register.png) |
+| **Evidence** | [Screenshot of successful registration](docs/ust-validation-1.png) |
 
 ---
 
@@ -499,7 +454,7 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | They enter correct login credentials |
 | **Then** | They are logged in and redirected to the dashboard/home page |
 | **Result** | Pass |
-| **Evidence** | [Screenshot of login success](docs/user-story-login.png) |
+| **Evidence** | [Screenshot of login success](docs/ust-validation-2-login.png) [Screenshot of login success](docs/ust-validation-2-logged-in.png)|
 
 ---
 
@@ -513,7 +468,7 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | They select a valid date and time slot and submit the form |
 | **Then** | The booking is saved and confirmation is displayed |
 | **Result** | Pass |
-| **Evidence** | [Screenshot of successful booking](docs/user-story-booking.png) |
+| **Evidence** | [Screenshot of successful booking](docs/ust-validation-3.png) |
 
 ---
 
@@ -527,7 +482,7 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | The user attempts to book the same slot |
 | **Then** | An error message is displayed and the booking is rejected |
 | **Result** | Pass |
-| **Evidence** | [Screenshot of booking validation error](docs/user-story-duplicate.png) |
+| **Evidence** | [Screenshot of booking validation error](docs/ust-validation-4.png) |
 
 ---
 
@@ -545,7 +500,7 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | The user clicks cancel/delete |
 | **Then** | The booking is removed and a confirmation message appears |
 | **Result** | Pass |
-| **Evidence** | [Screenshot of bookings dashboard](docs/user-story-dashboard.png) |
+| **Evidence** | [Screenshot of bookings dashboard](docs/ust-validation-5-cancel-page.png) [Screenshot of bookings deleted successfully](docs/ust-validation-5-confirmed-cancelation.png) |
 
 ---
 
@@ -559,30 +514,41 @@ The `Booking` model enforces several important business rules through the `clean
 | **When** | The display changes between mobile, tablet, and desktop |
 | **Then** | All elements remain readable and functional |
 | **Result** | Pass |
-| **Evidence** | [Responsive screenshots](docs/all-screen-sizes-image.png) |
+| **Evidence** | [Responsive screenshots](docs/ust-validation-6.png) |
 
 
+## Admin Access Testing
 
+| Test Case           | Description                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| **Test Objective**  | Verify that unauthorised users cannot access the Django admin panel. |
+| **Steps Taken**     | Logged in as a non-staff user and attempted to access `/admin/`.     |
+| **Expected Result** | Access denied and user prompted to log in with a staff account.      |
+| **Actual Result**   | Access was denied as expected.                                       |
+| **Status**          | Pass                                                                 |
+| **Evidence** | [Responsive screenshots](docs/admin-acess-testing.png) |
+
+This confirms that Django’s built-in permission system correctly restricts admin access to users with staff privileges.
 
 ## Code Validation
 
 ### CSS
 
-I have used [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/).  
-![Screenshot of CSS validation test](src/docs/)
-![Screenshot of CSS validation test](src/docs)
+I have used [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/). There were no errors.
+![Screenshot of CSS validation test](docs/css-validation.png)
+
 
 ### HTML
 
-I have used [W3C HTML Validation Service](https://validator.w3.org/). The tests came back with no errors. There were 3 info messages about trailing slash on void elements, but that doesn't indicate any problems, just showing best practices. Having used Vite for my React.js app, I have not changed the trailing slashes on the index HTML, as it was set up that way and doesn't pose any problems to the functioning of the app.
-
+I have used [W3C HTML Validation Service](https://validator.w3.org/). The tests came back with 11 errors.
 ![HTML Validation image](src/docs/)
 ![HTML Validation image](src/docs/)
 
 ### Javascript 
 
+The file `booking-validation.js` was validated by ESlint through VSCode plug-in. ESLint was used to ensure code quality and identify potential issues during development. 0 errors was identified.
 
-
+![ESlint Validation image](docs/eslint-validation.png)
 
 ## Accessibility Testing
 
@@ -599,7 +565,8 @@ This website was extensively tested for functionality using Chrome developer too
 
 ## Lighthouse Testing
 
-The Breathe Sauna Project has been tested in Chrome Dev Tools using Lighthouse Testing tool, which inspects and scores the website for the following criteria. I generated two sets of lighthouse reports, one for mobile and one for desktop. 
+The Breathe Sauna Project has been tested in Chrome Dev Tools using Lighthouse Testing tool, which inspects and scores the website for the following criteria. I generated two sets of lighthouse reports, one for mobile and one for desktop. The application achieved high Lighthouse scores across Performance, Accessibility, Best Practices, and SEO on both mobile and desktop testing.
+
 
 - Performance - how quickly a website loads and how quickly users can access it.
 - Accessibility - test analyses how well people who use assistive technologies can use your website.
@@ -607,11 +574,11 @@ The Breathe Sauna Project has been tested in Chrome Dev Tools using Lighthouse T
 - SEO - checks if the website is optimised for search engine result rankings.
 
 ## Mobile chrome Dev tools testing:
-![lighthouse testing image index](src/docs/)
+![lighthouse testing image index](docs/mobile-lighthouse-testing.png)
  
 
 ## Desktop chrome Dev tools testing:
-![lighthouse testing image index](src/docs/)
+![lighthouse testing image index](docs/desktop-lighthouse-testing.png)
  
 ## Known Issues / Limitations
 
@@ -807,6 +774,8 @@ git clone <repository-url>
   - [Unsplash](https://unsplash.com/)
 
 - learning content:
+  - [Corey Schafer Django Tutorials](https://www.youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p) 
+
 
   
  
