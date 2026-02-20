@@ -29,7 +29,7 @@ class TimeSlot(models.Model): # when it can be booked
 
     def __str__(self):
         # Display time in readable format. Example: "09:00 - 10:00" 
-        return f"{self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}" # strftime = string format time
+        return f"{self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}" 
 
     class Meta:
         ordering = ['start_time'] # Slots appear chronologically
