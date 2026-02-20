@@ -9,8 +9,8 @@
   style="background: url('{% static "images/lg-sauna-hero.webp" %}') bottom/cover no-repeat;">
   <div class="hero-content container text-center">
     <div class="hero-text">
-    <h1 class="display-2 fw-bold mb-3">Take Time to Breathe</h1>
-    <p class="lead mb-4 fw-bold">
+    <h1 class="display-2 fw-bold">Take Time to Breathe</h1>
+    <p class="lead fw-bold">
       Step away from the noise into the warmth. <br>
        Your time to relax is waiting.
     </p>
@@ -18,7 +18,7 @@
     {% if user.is_authenticated %}
 
        
-        <a href="{% url 'booking_create' %}" class="btn btn-cream btn-lg me-2">
+        <a href="{% url 'booking_create' %}" class="btn btn-cream btn-lg me-2 mb-3">
             Book a Session
         </a>
 

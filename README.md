@@ -540,9 +540,9 @@ I have used [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/). 
 
 ### HTML
 
-I have used [W3C HTML Validation Service](https://validator.w3.org/). The tests came back with 11 errors.
-![HTML Validation image](src/docs/)
-![HTML Validation image](src/docs/)
+I have used [W3C HTML Validation Service](https://validator.w3.org/). The tests came back with 11 errors. I fixed the HTML validation errors shown in the images above, mainly related to incorrect ARIA references. I tested all publicly accessible pages using the validator. The pages within the booking system require login, so I was unable to validate them directly; however, they use the same base template as the validated pages.
+![HTML Validation image](docs/html-validation-testing.png)
+![HTML Validation image](docs/html-validation-sauna-testing.png)
 
 ### Javascript 
 
