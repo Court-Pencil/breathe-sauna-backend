@@ -45,6 +45,7 @@ The application demonstrates backend development using Django, relational databa
   - [Languages](#languages)
   - [Libraries & Framework](#libraries-framework)
   - [Tools](#tools)
+- [Application Architecture](#application-architecture)
 - [Data Schema](#data-schema)
 - [Testing](#testing)
   - [Bugs Fixed](#bugs-fixed)
@@ -165,7 +166,7 @@ The **muted green accent** introduces an association with nature, health, and re
 
 Together, these colours create a harmonious palette that promotes calmness, warmth, and trust. The psychological effect supports the project’s goal of providing a soothing and welcoming user experience, rather than an overstimulating or distracting interface.
 
-![Coolors scheme](docs\sauna-colour-scheme.png)
+![Coolors scheme](docs/sauna-colour-scheme.png)
 
 I used [Contrast Grid](https://contrast-grid.eightshapes.com/ "Contrast Grid") to check effective color pairings that support readability and to identify combinations that may hinder legibility due to insufficient contrast or visual discomfort.
 
@@ -293,9 +294,25 @@ Automated reminder notifications could reduce missed appointments.
 - [PostgreSQL](https://www.postgresql.org/)
 
 
-##Data Schema
+## Application Architecture
 
-# Data Schema
+The Breathe Sauna application follows Django’s Model–Template–View (MTV) architectural pattern.
+
+### Models  
+The models define the database structure, including `Sauna`, `TimeSlot`, and `Booking`.  
+Business rules such as preventing bookings in the past and enforcing sauna capacity limits are implemented at the model level using server-side validation and aggregation queries.
+
+### Views  
+Views handle incoming HTTP requests, process form submissions, validate user input, and return responses.  
+CRUD operations (Create, Read, Update, Delete) for bookings are managed through Django views with authentication and permission checks applied where required.
+
+### Templates  
+Templates render dynamic content using context data passed from the views.  
+Booking details, dashboards, sauna information, and validation messages are displayed using Django’s template engine.
+
+This structured separation ensures clear division between database logic, application logic, and presentation, improving maintainability and scalability.
+
+##Data Schema
 
 ## Overview
 The sauna booking system uses three main data models to manage bookings: **Sauna**, **TimeSlot**, and **Booking**. These models work together to enable users to reserve sauna sessions for specific dates and times while preventing overbooking.
@@ -429,7 +446,7 @@ Overall, resolving these bugs reflects a clear progression in technical understa
 | Next Hub Max         | Max-width applied, UI stable            | Works as expected | Pass    |       |
 
 
-## Manual Testing ()
+## Manual Testing
 
 ### User Story BDD Testing
 
@@ -568,8 +585,8 @@ The file `booking-validation.js` was validated by ESLint through VSCode plug-in.
 ![ESLint Validation image](docs/eslint-validation.png)
 
 ## Accessibility Testing
-
-I used the web accessibilty evalution tool [WAVE](https://wave.webaim.org/).
+  
+I used the web accessibility evaluation tool [WAVE](https://wave.webaim.org/).
 
 A WAVE accessibility evaluation was conducted to assess ARIA implementation and overall compliance with accessibility standards. The results indicate 0 accessibility errors, 3 contrast errors, and 3 alerts, with an overall AIM score of 8.4 out of 10.
 
@@ -583,7 +600,7 @@ Overall, the accessibility evaluation confirms that structural and ARIA-related 
 
 ![WAVE](docs/first-wave-test.png)
 ![WAVE](docs/wave-testing.png)
-![WAVE](docs\wave-testing-sauna.png) 
+![WAVE](docs/wave-testing-sauna.png) 
 
 
 
