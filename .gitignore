@@ -53,5 +53,4 @@ dist/
 .coverage
 htmlcov/
 
-eslint.config.mjs
 node_modules
