@@ -552,11 +552,22 @@ The file `booking-validation.js` was validated by ESlint through VSCode plug-in.
 
 ## Accessibility Testing
 
-I used the web accessibilty evalution tool [WAVE](https://wave.webaim.org/) to test if my quiz app is accessible to people with diverse needs. One alert was raised, because this is a single page application there are no defined page regions to support improved navigation for assistive technologies. I also used the colour contrast checker on WAVE's site for additional checking.
+I used the web accessibilty evalution tool [WAVE](https://wave.webaim.org/).
 
-![WAVE](src/docs/)
-![WAVE](src/docs/)
-![WAVE](src/docs/)
+A WAVE accessibility evaluation was conducted to assess ARIA implementation and overall compliance with accessibility standards. The results indicate 0 accessibility errors, 3 contrast errors, and 3 alerts, with an overall AIM score of 8.4 out of 10.
+
+Previously identified issues relating to incorrect ARIA references and an empty <head> element have been successfully resolved. Correcting the ARIA reference errors ensured that all ARIA attributes properly correspond to valid element IDs, improving assistive technology compatibility. The removal of the empty <head> tag error also ensured proper document structure and HTML validity.
+
+The remaining issues consist of three low colour contrast warnings. These contrast ratios cannot be modified due to established design constraints. Aside from these contrast limitations, the page demonstrates appropriate semantic structure, correct ARIA implementation, and adherence to accessibility best practices.
+
+The pages within the booking system require user authentication and therefore could not be directly tested using the WAVE accessibility tool; however, they are built using the same base template and accessibility structure as the pages that were successfully evaluated.
+
+Overall, the accessibility evaluation confirms that structural and ARIA-related issues have been addressed, with only minor contrast-related limitations remaining.
+
+![WAVE](docs/first-wave-test.png)
+![WAVE](docs/wave-testing.png)
+![WAVE](docs\wave-testing-sauna.png) 
+
 
 
 ## Feature Testing
